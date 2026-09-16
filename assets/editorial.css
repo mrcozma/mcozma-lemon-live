@@ -8,7 +8,7 @@
 }
 :root { --font-display: "mcozma Jedira", Georgia, "Times New Roman", serif; }
 /* Keep the page and navigation still when a different link becomes bold. */
-html { scrollbar-gutter: stable; }
+html { overflow-y: scroll; }
 .header nav a[data-nav-label] { display: grid; }
 .header nav a[data-nav-label]::after {
   content: attr(data-nav-label);
@@ -236,13 +236,12 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
   --gradient-lemon: linear-gradient(155deg, #f2ff49 0%, #f7ff8b 42%, #ffffef 100%);
   --section-grey: #f5f5f6;
   --gradient-ivory: linear-gradient(125deg, #f7f3e9 0%, #fcf9f1 55%, #fffdf8 100%);
-  --gradient-intro: linear-gradient(180deg, #f2ff49 0%, #f7ff8b 36%, #fcffda 67%, #ffffff 100%);
 }
 .colour-section { width: 100%; }
 .tone-lemon { background: var(--gradient-lemon); }
 .tone-grey { background: var(--section-grey); }
 .tone-ivory { background: var(--gradient-ivory); }
-.tone-intro { background: var(--gradient-intro); }
+.tone-intro { background: var(--paper); }
 .colour-section:not(.tone-intro) { --line: #1d1d1f26; --muted: #53535c; }
 .colour-section:not(.tone-intro) > .container {
   padding-top: 80px;
@@ -355,3 +354,16 @@ summary:active { color: #080809; }
 
 /* Match the disclosure icon to the requested state during closing. */
 summary[aria-expanded="false"] .details-icon, .company-services details[open] summary[aria-expanded="false"] > span:last-child, .earlier-experience[open] summary[aria-expanded="false"] > span { transform: none; }
+
+/* Keep labels and directional icons on the same optical centre. */
+.button .cta-icon, .nav-cta .cta-icon, .text-link .cta-icon, .live-status .cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1em;
+  width: 1em;
+  height: 20px;
+  margin: 0;
+  line-height: 1;
+  font-weight: 400;
+}
