@@ -147,8 +147,8 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
   padding: 27px 0;
   border-top: 1px solid var(--line);
 }
-.contact-options > a h2 { transition: transform .25s; }
-.contact-options > a:hover h2 { transform: translateX(5px); }
+.contact-options > a h2 { transition: color .18s; }
+.contact-options > a:hover h2 { color: #56565b; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
 .access-card { background: none; border-radius: 0; border-left: 1px solid var(--line); padding: 0 0 0 40px; }
 .access-status { background: none; border-radius: 0; border-top: 1px solid var(--line); padding: 28px 0 0; }
 .project-art, .public-cover img, .private-cover img { border-radius: 8px; }
@@ -234,13 +234,13 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
 /* Section colour is shared vocabulary, never a card or a hover state. */
 :root {
   --gradient-lemon: linear-gradient(155deg, #f2ff49 0%, #f7ff8b 42%, #ffffef 100%);
-  --gradient-lilac: linear-gradient(125deg, #eeebff 0%, #f4f1ff 48%, #fbfaff 100%);
+  --section-grey: #f5f5f6;
   --gradient-ivory: linear-gradient(125deg, #f7f3e9 0%, #fcf9f1 55%, #fffdf8 100%);
-  --gradient-intro: radial-gradient(ellipse at 90% 0%, #f2ff4980, #f2ff4900 65%), linear-gradient(180deg, #fffef5, #fff);
+  --gradient-intro: linear-gradient(180deg, #f2ff49 0%, #f7ff8b 36%, #fcffda 67%, #ffffff 100%);
 }
 .colour-section { width: 100%; }
 .tone-lemon { background: var(--gradient-lemon); }
-.tone-lilac { background: var(--gradient-lilac); }
+.tone-grey { background: var(--section-grey); }
 .tone-ivory { background: var(--gradient-ivory); }
 .tone-intro { background: var(--gradient-intro); }
 .colour-section:not(.tone-intro) { --line: #1d1d1f26; --muted: #53535c; }
@@ -263,7 +263,7 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
 .colour-section .mentoring-grid article { border-top-color: var(--line); }
 .colour-section .recommendation-card { border-right-color: var(--line); }
 .colour-section .recommendation-controls button { background: #ffffffa8; }
-.colour-section .recommendation-controls button:hover:enabled { background: #fff; border-color: #b9b4d0; }
+.colour-section .recommendation-controls button:hover:enabled { background: #fff; border-color: #adadb2; }
 .colour-section .process-outputs { color: #62605a; }
 .colour-section .review-source { color: #62626d; }
 .colour-section .process-step:last-child { border-bottom: 0; }
@@ -275,3 +275,83 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
   .colour-section + .container { margin-top: 54px; }
   .colour-section.tone-intro + .container { margin-top: 0; }
 }
+
+
+/* Optical balance between the display face and its sans-serif lead-in. */
+h1:has(.brand-phrase), h1:has(.brand-display), .contact-band h2:has(.brand-phrase) {
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -.028em;
+}
+h1 .brand-phrase, h1 .brand-display, .contact-band h2 .brand-phrase {
+  font-size: .95em;
+  line-height: 1.12;
+}
+.header nav { font-size: 16px; }
+.header nav a:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+.header nav a[aria-current] { text-decoration: none; }
+.menu-toggle { font-size: 16px; }
+
+/* Colour communicates action; the target keeps its position. */
+.button, .nav-cta, .text-link, .reset-note, .perspective-controls button,
+.recommendation-controls button, .menu-toggle {
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.button, .nav-cta { min-height: 44px; }
+.button:hover, .button:active, .nav-cta:hover, .nav-cta:active { transform: none; }
+.button.dark:hover, .nav-cta:hover { background: #444448; color: #fff; }
+.button.dark:active, .nav-cta:active { background: #080809; color: #fff; box-shadow: inset 0 0 0 2px #737378; }
+.button.accent:hover { background: #fff; color: var(--ink); }
+.button.accent:active { background: #e2eb56; color: var(--ink); box-shadow: inset 0 0 0 2px #777b31; }
+.text-link:hover { color: #56565b; text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+.text-link:active { color: #080809; text-decoration-thickness: 2px; }
+.reset-note:hover, .perspective-controls button:not([aria-pressed="true"]):hover { background: #e9e9ec; color: var(--ink); }
+.reset-note:active, .perspective-controls button:not([aria-pressed="true"]):active { background: #dcdcE0; }
+.reset-note { border-radius: 5px; min-height: 32px; }
+.perspective-controls button { min-height: 40px; }
+.recommendation-controls button:hover:enabled,
+.colour-section .recommendation-controls button:hover:enabled { background: var(--ink); color: #fff; border-color: var(--ink); }
+.recommendation-controls button:active:enabled { background: #444448; }
+button:disabled { cursor: default; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible,
+.note-content textarea:focus-visible, .recommendation-track:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 5px;
+  box-shadow: 0 0 0 2px #fff;
+}
+.contact-band :where(a, button):focus-visible { outline-color: #fff; box-shadow: 0 0 0 2px var(--ink); }
+.project-art { transition: box-shadow .2s ease; }
+.project-art:hover, .project-art:focus-visible { box-shadow: 0 0 0 2px #c1c1c7; }
+summary { transition: color .18s ease; }
+summary:hover { color: #56565b; }
+summary:active { color: #080809; }
+.earlier-experience summary > span { transition: transform .26s ease; }
+.note-check span { transition: opacity .18s ease; }
+
+/* A direct, email-led invitation flow. */
+.preview-panel .access-card .access-help { font-size: 13px; line-height: 1.6; margin: 16px 0 0; }
+.preview-panel .access-card .access-followup { font-size: 14px; margin-top: 24px; }
+.access-page { max-width: var(--content); padding-top: 0; }
+.access-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 90px; align-items: start; }
+.access-steps { list-style: none; padding: 0; margin: 0; }
+.access-steps li { display: grid; grid-template-columns: 36px 1fr; gap: 18px; padding: 26px 0; border-top: 1px solid var(--line); }
+.access-step-number { font-size: 12px; color: var(--muted); padding-top: 5px; }
+.access-steps h2 { font-family: var(--font); font-size: 24px; font-weight: 500; line-height: 1.2; }
+.access-steps p, .access-invitation p { margin-top: 14px; font-size: 16px; line-height: 1.65; color: var(--muted); }
+.access-invitation { padding-top: 25px; border-top: 1px solid var(--line); }
+.access-invitation h2 { font-size: 30px; font-weight: 400; }
+.access-invitation .button { margin-top: 26px; }
+.access-invitation .access-help { font-size: 13px; }
+.access-invitation .access-returning { margin-top: 32px; padding-top: 26px; border-top: 1px solid var(--line); }
+.access-returning a { text-decoration: underline; text-underline-offset: 4px; }
+.access-back { margin-top: 34px; }
+@media (max-width: 700px) {
+  .header nav { font-size: 18px; }
+  .header nav.open { animation: menu-reveal .2s ease both; }
+  .access-layout { grid-template-columns: 1fr; gap: 30px; }
+  .access-page { padding-bottom: 65px; }
+}
+@keyframes menu-reveal { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* Match the disclosure icon to the requested state during closing. */
+summary[aria-expanded="false"] .details-icon, .company-services details[open] summary[aria-expanded="false"] > span:last-child, .earlier-experience[open] summary[aria-expanded="false"] > span { transform: none; }
