@@ -367,3 +367,10 @@ summary[aria-expanded="false"] .details-icon, .company-services details[open] su
   line-height: 1;
   font-weight: 400;
 }
+
+/* Keep the public legal entry alongside the existing footer utilities. */
+.footer-with-legal { align-items: center; padding-block: 14px; }
+.footer-utility { display: flex; align-items: center; gap: 24px; font-size: 12px; }
+.footer-utility a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px; }
+.footer-utility a:hover, .footer-utility a:focus-visible { color: var(--ink); text-decoration: underline; }
+.footer-utility a[aria-current="page"] { color: var(--ink); font-weight: 600; }
