@@ -14,14 +14,15 @@ Marian connects strategy, hands-on design and engineering. His public portfolio 
 - [Google — Component Systems & Interaction Design | Marian Cozma](https://mcozma.com/project-google.html): A preview of Marian Cozma’s work on configurable components and interaction rules at Google, developed with product and engineering through design delivery.
 - [Three UK — Connected Digital Experiences | Marian Cozma](https://mcozma.com/project-three.html): Explore Marian Cozma’s contribution to customer journeys and reusable page structures at Three UK, connecting research, responsive design and platform delivery.
 - [UBS — Research & Workflow Design | Marian Cozma](https://mcozma.com/project-ubs.html): A preview of Marian Cozma’s research, workflow design and user testing for an operational platform at UBS, helping people understand priorities and act.
-- [Legal & General — Responsive Content Design | Marian Cozma](https://mcozma.com/project-legal-and-general.html): Explore Marian Cozma’s contribution at NTT DATA to reusable content tiles for Legal & General, connecting account tasks, information hierarchy and responsive design.
+- [Legal & General — Responsive Content Design | Marian Cozma](https://mcozma.com/project-legal-and-general.html): Explore Marian Cozma’s reusable content-tile design for Legal & General, connecting account tasks, customer control, responsive components and validation.
 - [JLR — Range Rover Digital Sales Concept | Marian Cozma](https://mcozma.com/project-jlr.html): Explore Marian Cozma’s contribution at Tangity to a Range Rover digital sales concept, connecting research, stakeholder workshops and experience design.
 - [Totaljobs — Recruiter Commerce Design | Marian Cozma](https://mcozma.com/project-totaljobs.html): A preview of Marian Cozma’s interface design and hands-on front-end implementation for responsive recruiter commerce at Totaljobs.
 - [Virgin Media — Guided Support Design | Marian Cozma](https://mcozma.com/project-virgin-media.html): Explore Marian Cozma’s work on guided support at Virgin Media, connecting content, navigation and decision logic across web and mobile experiences.
+- [Design Mentorship — Marian Cozma](https://mcozma.com/mentorship.html): Practical design mentorship with Marian Cozma. Bring a portfolio, career question or live design challenge to a focused conversation.
 
 ## More about Marian
 
-- [Mentorship](https://mcozma.com/about.html#mentorship): Practical guidance for designers on portfolios, careers and leadership.
+- [Mentorship](https://mcozma.com/mentorship.html): Practical guidance for designers on portfolios, careers and leadership.
 - [Books](https://mcozma.com/about.html#reading): Books that inform Marian’s design practice.
 
 Project pages are public previews. Full case studies are available on request.

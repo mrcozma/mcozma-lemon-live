@@ -1,0 +1,4 @@
+IBM Carbon icons · @carbon/icons 11.88.0
+Copyright IBM Corp. 2016, 2023. Apache License 2.0.
+Source: https://github.com/carbon-design-system/carbon
+Paths are unchanged. SVG attributes adapted for accessible inline presentation.

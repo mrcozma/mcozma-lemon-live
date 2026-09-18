@@ -10,6 +10,9 @@
     const open = toggle.getAttribute('aria-expanded') !== 'true';
     toggle.setAttribute('aria-expanded', String(open));
     navigation?.classList.toggle('open', open);
+    if (open && !matchMedia('(prefers-reduced-motion: reduce)').matches && typeof navigation?.animate === 'function') {
+      navigation.animate([{ opacity: 0, transform: 'translateY(-10px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.16,1,.3,1)' });
+    }
   });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
@@ -24,7 +27,7 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   // Keep native disclosures usable without scripts; enhance their size change.
   const disclosures = new Map();
-  document.querySelectorAll('.process-step, .company-services details, .earlier-experience, .reading-more, .case-deep-dive').forEach(details => {
+  document.querySelectorAll('.process-step, .company-services details, .earlier-experience, .reading-more, .case-deep-dive, .story-disclosure').forEach(details => {
     const summary = details.querySelector(':scope > summary');
     if (!summary) return;
     const group = details.getAttribute('name');
@@ -56,7 +59,7 @@
       details.open = true;
       details.style.overflow = 'clip';
       animation = details.animate([{ height: `${start}px` }, { height: `${end}px` }], {
-        duration: 280, easing: 'cubic-bezier(.22,.61,.36,1)'
+        duration: 360, easing: 'cubic-bezier(.16,1,.3,1)'
       });
       animation.onfinish = finish;
       animation.oncancel = finish;
@@ -71,6 +74,11 @@
       setExpanded(next);
     });
     summary.setAttribute('aria-expanded', String(expanded));
+    details.addEventListener('toggle', () => {
+      if (animation) return;
+      expanded = details.open;
+      summary.setAttribute('aria-expanded', String(expanded));
+    });
   });
 
   // Saved public access links retain only known project context.
@@ -178,6 +186,14 @@
     selectPerspective('users', false);
   }
 
+  const noteDisclosure = document.querySelector('.note-disclosure');
+  if (noteDisclosure) {
+    const compactNote = matchMedia('(max-width: 700px)');
+    const setNoteLayout = () => { noteDisclosure.open = !compactNote.matches; };
+    setNoteLayout();
+    compactNote.addEventListener('change', setNoteLayout);
+  }
+
   const recommendations = document.querySelector('.recommendations');
   if (recommendations) {
     const track = recommendations.querySelector('.recommendation-track');
@@ -207,21 +223,30 @@
     updateReviewControls();
   }
 
-  // Content is visible before enhancement and remains readable if JavaScript fails.
-  if ('IntersectionObserver' in window && typeof Element.prototype.animate === 'function') {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        observer.unobserve(entry.target);
-        if (reducedMotion.matches) return;
-        entry.target.animate([{ opacity: .45, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }], {
-          duration: 550, easing: 'cubic-bezier(.2,.7,.25,1)'
-        });
+  // The work index reflects reading position without moving the page or focus.
+  const workIndex = document.querySelector('[data-work-index]');
+  if (workIndex) {
+    const links = [...workIndex.querySelectorAll('a')];
+    const rows = links.map(link => document.getElementById(link.hash.slice(1)));
+    links.forEach(link => { link.dataset.projectLabel = link.textContent; });
+    let workFrame = 0;
+    function updateWorkIndex() {
+      workFrame = 0;
+      const line = workIndex.getBoundingClientRect().bottom + 70;
+      const current = rows.filter(row => row && row.getBoundingClientRect().top <= line).pop();
+      links.forEach(link => {
+        if (current && link.hash === `#${current.id}`) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
       });
-    }, { threshold: .12 });
-    document.querySelectorAll('.project, .belief-list article, .book-item, .mentoring-grid article').forEach(el => observer.observe(el));
-    reducedMotion.addEventListener('change', () => {
-      if (reducedMotion.matches) document.getAnimations().forEach(animation => animation.cancel());
-    });
+    }
+    window.addEventListener('scroll', () => {
+      if (!workFrame) workFrame = requestAnimationFrame(updateWorkIndex);
+    }, { passive: true });
+    window.addEventListener('resize', updateWorkIndex);
+    updateWorkIndex();
   }
+
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) disclosures.forEach(control => control.setExpanded(control.isExpanded()));
+  });
 })();
