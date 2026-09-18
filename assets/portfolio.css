@@ -220,18 +220,20 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .mentor-preview img { border-radius: 50%; object-fit: cover; width: 44px; height: 44px; }
 .mentor-preview small { display: block; color: var(--muted); margin-top: 3px; font-size: 14px; }
 /* A steady closing invitation serves roles, contracts and independent engagements. */
-.closing-section { background: #202022; color: #fff; padding-block: 82px 38px; }
-.closing-composition { display: grid; grid-template-columns: minmax(0,1.6fr) minmax(280px,1fr); gap: 64px; align-items: center; }
+.closing-section { background: #202022; color: #fff; padding-block: 82px 64px; }
+.closing-composition { display: grid; grid-template-columns: minmax(0,1.9fr) minmax(260px,1fr); gap: 64px; align-items: end; }
+.closing-main { grid-column: 1/-1; min-width: 0; }
+.closing-composition:has(> .practice-bridge) .closing-main { grid-column: auto; }
 .closing-section h2 { color: #fff; font-size: clamp(38px,4.2vw,60px); line-height: 1.18; }
 .closing-section .eyebrow { color: #babac0; margin-bottom: 23px; }
 .closing-intro { margin-top: 24px; color: #c4c4ca; font-size: 16px; line-height: 1.7; }
-.closing-actions { display: flex; flex-direction: column; align-items: stretch; justify-self: end; width: min(100%, 330px); gap: 20px; }
-.closing-email { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 8px 12px; color: #fff; font-size: 18px; text-decoration: underline; text-decoration-color: #ffffff60; text-underline-offset: 5px; transition: color .2s, text-decoration-color .2s; }
+.closing-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
+.closing-email { display: inline-flex; align-items: center; justify-content: flex-start; min-height: 48px; padding: 8px 0; color: #fff; font-size: 18px; text-decoration: underline; text-decoration-color: #ffffff60; text-underline-offset: 5px; transition: color .2s, text-decoration-color .2s; }
 .closing-email:hover { color: var(--accent); text-decoration-color: currentColor; }
-.practice-bridge { grid-column: 1/-1; display: grid; grid-template-columns: minmax(0,1.6fr) minmax(280px,1fr); gap: 64px; align-items: center; padding-top: 8px; margin-top: 0; }
+.practice-bridge { display: flex; flex-direction: column; align-items: flex-start; justify-self: end; gap: 20px; width: 100%; max-width: 330px; margin: 0; }
 .practice-bridge .practice-bridge-label { font-size: 16px; color: #fff; margin-bottom: 8px; }
 .practice-bridge-copy > p { font-size: 16px; line-height: 1.6; color: #c4c4ca; max-width: 465px; }
-.practice-bridge .text-link { justify-self: end; display: inline-flex; justify-content: center; width: min(100%,330px); min-height: 48px; margin: 0; color: #fff; }
+.practice-bridge .text-link { display: inline-flex; justify-content: flex-start; min-height: 48px; margin: 0; color: #fff; }
 .portfolio-page .closing-section .text-link:hover { color: #fff; }
 .closing-section :where(a,button):focus-visible { outline-color: #fff; box-shadow: 0 0 0 2px var(--ink); }
 .portfolio-page > footer { padding-top: 36px; }
@@ -322,7 +324,7 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .session-preparation h2 { font-size: 37px; margin-bottom: 24px; }
 .session-preparation > p:not(.eyebrow) { max-width: 630px; font-size: 18px; line-height: 1.7; color: #626268; }
 .page-mentorship .recommendations { margin-top: 0; }
-/* Lab: one live product and two clearly identified directions. */
+/* Lab: independent products, practice and resources shared with the community. */
 .lab-directory { display: flex; flex-wrap: wrap; gap: 12px 30px; margin-top: 34px; }
 .lab-directory a { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; font-size: 16px; text-decoration: underline; text-decoration-color: #b9b9bf; text-underline-offset: 6px; transition: text-decoration-color .2s; }
 .lab-directory a:hover { text-decoration-color: var(--ink); }
@@ -354,6 +356,18 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .lab-incubator .lab-state-dot { background: transparent; border: 1px solid #626268; }
 .lab-studio { border: 1px solid #dcdce1; }
 .portfolio-page .lab-studio h2 { font-size: clamp(32px,3.2vw,46px); letter-spacing: .015em; }
+/* Community resources: an open collection that can grow over time. */
+.lab-community-resource { padding-top: 84px; }
+.lab-resource-copy { max-width: 720px; }
+.lab-resource-label { display: flex; align-items: center; gap: 12px; font-size: 14px; line-height: 1.5; margin-bottom: 24px; color: #626268; }
+.lab-resource-label img { width: 24px; height: 24px; }
+.lab-resource-copy h2 { font-size: clamp(34px,3.4vw,48px); line-height: 1.15; letter-spacing: -.025em; font-weight: 400; }
+.lab-resource-description { margin-top: 22px; max-width: 620px; font-size: 18px; line-height: 1.65; color: #626268; }
+.lab-resource-copy .button { margin-top: 28px; }
+@media (max-width: 800px) {
+ .lab-community-resource { padding-top: 60px; }
+ .lab-resource-description { font-size: 17px; }
+}
 @media (max-width: 1100px) {
  .lab-live-feature { padding: 36px; }
  .lab-live-body { gap: 36px; }
@@ -467,7 +481,7 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .title-highlight { background: var(--accent); color: var(--ink); padding: .015em .07em .065em; margin-inline: -.07em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .portfolio-page h1 .title-highlight .brand-phrase { line-height: inherit; }
 .closing-section h2 .brand-phrase { font-family: var(--font-display); font-size: 1.01em; font-weight: 400; letter-spacing: -.004em; }
-.closing-actions .button { justify-content: center; width: 100%; }
+.closing-actions .button { justify-content: center; width: auto; flex-shrink: 0; }
 .quote-dark .work-feedback-quote figcaption > span { color: #bfc0c6; }
 .colleague-voices .quote-heading { margin-bottom: 48px; }
 .portfolio-page .footer-top > div { font-size: 14px; }
@@ -549,13 +563,13 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
  .product-feature .chapter-heading { margin-bottom: 40px; }
  .product-feature .chapter-heading h2 { font-size: 32px; }
  .mentor-preview blockquote { font-size: 23px; }
- .closing-section { padding-block: 60px 30px; }
- .closing-composition { grid-template-columns: 1fr; gap: 30px; }
+ .closing-section { padding-block: 60px 40px; }
+ .closing-composition { grid-template-columns: 1fr; gap: 44px; }
  .closing-section h2 { font-size: clamp(35px,8.2vw,48px); }
- .closing-actions { justify-self: start; }
+ .closing-actions { gap: 12px 24px; margin-top: 28px; }
  .closing-intro { font-size: 15px; }
- .practice-bridge { grid-template-columns: 1fr; gap: 16px; margin-top: 10px; padding-top: 16px; }
- .practice-bridge .text-link { justify-self: start; margin: 0; }
+ .practice-bridge { justify-self: start; gap: 16px; max-width: 400px; }
+ .practice-bridge .text-link { margin: 0; }
  .about-introduction { padding-block: var(--opening-space) 44px; }
  .about-heading { margin-bottom: 38px; }
  .portfolio-page .about-heading h1 { font-size: clamp(42px,10vw,62px); }
