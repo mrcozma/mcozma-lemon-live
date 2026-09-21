@@ -1,0 +1,14 @@
+/* Motion primitives do not hide content until the enhancement is available. */
+.motion-line-mask { padding-block: .1em; margin-block: -.1em; overflow: clip !important; }
+.motion-line { transform-origin: left bottom; }
+[data-motion-engine="gsap"] .folio-art img { transition: none; }
+[data-motion-engine="gsap"] .folio-link:hover .folio-art img { transform: none; }
+[data-gsap-marquee] .logo-track { animation: none; }
+.reading-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ink); transform: scaleX(0); transform-origin: left center; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+ .reading-progress { display: none; }
+ .motion-line-mask { overflow: visible !important; }
+}
+@media print {
+ [style*="clip-path"], .motion-line { clip-path: none !important; transform: none !important; opacity: 1 !important; }
+}
