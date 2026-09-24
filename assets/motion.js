@@ -132,7 +132,7 @@
     if (process) reveal(process);
     // Product typography gives the independent work its own visual scale.
     select('.decised-identity, .lab-live-body > div:first-child').forEach(element => {
-      addScene(element, gsap.from(element, { x: compact ? -12 : -38, opacity: .2, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: element, start: 'top 90%', once: true } }));
+      addScene(element, gsap.from(element, { x: compact ? -12 : -38, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: element, start: 'top 90%', once: true } }));
     });
     select('.closing-actions, .practice-bridge, .decised-invitation, .lab-live-copy').forEach(element => reveal(element));
 

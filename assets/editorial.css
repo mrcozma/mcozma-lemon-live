@@ -1,7 +1,7 @@
 /* Open layouts and the mcozma display voice. */
 @font-face {
   font-family: "mcozma Jedira";
-  src: url("fonts/Jedira-Regular.ttf") format("truetype");
+  src: url("fonts/Jedira-Regular.ttf?v=77a31ed7") format("truetype");
   font-style: normal;
   font-weight: 400;
   font-display: swap;

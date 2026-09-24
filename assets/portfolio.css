@@ -898,3 +898,12 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 @media (max-width: 420px) {
  .audience-routes > a { display: grid; grid-template-columns: 1fr; gap: 4px; }
 }
+
+/* Reserve the enhanced note deck before deferred scripts run. Without scripting,
+   the original stacked notes remain readable. */
+@media (scripting: enabled) {
+ .thinking-notes:not([data-enhanced]) .thinking-notes-panels { display: grid; }
+ .thinking-notes:not([data-enhanced]) .thinking-note { grid-area: 1/1; margin: 0; }
+ .thinking-notes:not([data-enhanced]) .thinking-note:not(:first-child) { visibility: hidden; }
+ .thinking-notes:not([data-enhanced]) .thinking-note-controls[hidden] { display: flex; visibility: hidden; }
+}
