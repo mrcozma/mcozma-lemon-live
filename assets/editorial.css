@@ -52,7 +52,7 @@ html { overflow-y: scroll; }
 h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
 .hero h1 { line-height: 1.08; }
 .hero h1 .brand-phrase { line-height: 1.12; }
-.contact-band h2 .brand-phrase { color: #fff; }
+.contact-band h2 .brand-phrase { color: #FCFDFF; }
 
 /* Content sits on the page; lines and spacing establish hierarchy. */
 .point-of-view {
@@ -233,16 +233,16 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
 
 /* Section colour is shared vocabulary, never a card or a hover state. */
 :root {
-  --gradient-lemon: linear-gradient(155deg, #f2ff49 0%, #f7ff8b 42%, #ffffef 100%);
-  --section-grey: #f5f5f6;
-  --gradient-ivory: linear-gradient(125deg, #f7f3e9 0%, #fcf9f1 55%, #fffdf8 100%);
+  --gradient-primary: linear-gradient(155deg,  #E7F0FF 0%, #DBE9FF 42%, #FCFDFF 100%);
+  --section-grey: #F1F5FB;
+  --gradient-ivory: linear-gradient(125deg, #E7F0FF 0%, #F1F5FB 55%, #FCFDFF 100%);
 }
 .colour-section { width: 100%; }
-.tone-lemon { background: var(--gradient-lemon); }
+.tone-primary { background: var(--gradient-primary); }
 .tone-grey { background: var(--section-grey); }
 .tone-ivory { background: var(--gradient-ivory); }
 .tone-intro { background: var(--paper); }
-.colour-section:not(.tone-intro) { --line: #1d1d1f26; --muted: #53535c; }
+.colour-section:not(.tone-intro) { --line: #000E1426; --muted: #53535c; }
 .colour-section:not(.tone-intro) > .container {
   padding-top: 80px;
   padding-bottom: 80px;
@@ -261,8 +261,8 @@ h1 .brand-phrase, h2 .brand-phrase { color: inherit; }
 .colour-section .mentor-topics { border-left-color: var(--line); }
 .colour-section .mentoring-grid article { border-top-color: var(--line); }
 .colour-section .recommendation-card { border-right-color: var(--line); }
-.colour-section .recommendation-controls button { background: #ffffffa8; }
-.colour-section .recommendation-controls button:hover:enabled { background: #fff; border-color: #adadb2; }
+.colour-section .recommendation-controls button { background: #FCFDFFa8; }
+.colour-section .recommendation-controls button:hover:enabled { background: #FCFDFF; border-color: #adadb2; }
 .colour-section .process-outputs { color: #62605a; }
 .colour-section .review-source { color: #62626d; }
 .colour-section .process-step:last-child { border-bottom: 0; }
@@ -298,32 +298,32 @@ h1 .brand-phrase, h1 .brand-display, .contact-band h2 .brand-phrase {
 }
 .button, .nav-cta { min-height: 44px; }
 .button:hover, .button:active, .nav-cta:hover, .nav-cta:active { transform: none; }
-.button.dark:hover, .nav-cta:hover { background: #444448; color: #fff; }
-.button.dark:active, .nav-cta:active { background: #080809; color: #fff; box-shadow: inset 0 0 0 2px #737378; }
-.button.accent:hover { background: #fff; color: var(--ink); }
-.button.accent:active { background: #e2eb56; color: var(--ink); box-shadow: inset 0 0 0 2px #777b31; }
+.button.dark:hover, .nav-cta:hover { background: #444448; color: #FCFDFF; }
+.button.dark:active, .nav-cta:active { background: #000E14; color: #FCFDFF; box-shadow: inset 0 0 0 2px #737378; }
+.button.accent:hover { background: #FCFDFF; color: var(--ink); }
+.button.accent:active { background: var(--accent-hover); color: var(--on-accent); box-shadow: inset 0 0 0 2px #00489F; }
 .text-link:hover { color: #56565b; text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
-.text-link:active { color: #080809; text-decoration-thickness: 2px; }
+.text-link:active { color: #000E14; text-decoration-thickness: 2px; }
 .reset-note:hover, .perspective-controls button:not([aria-pressed="true"]):hover { background: #e9e9ec; color: var(--ink); }
-.reset-note:active, .perspective-controls button:not([aria-pressed="true"]):active { background: #dcdcE0; }
+.reset-note:active, .perspective-controls button:not([aria-pressed="true"]):active { background: #dcdce0; }
 .reset-note { border-radius: 5px; min-height: 32px; }
 .perspective-controls button { min-height: 40px; }
 .recommendation-controls button:hover:enabled,
-.colour-section .recommendation-controls button:hover:enabled { background: var(--ink); color: #fff; border-color: var(--ink); }
+.colour-section .recommendation-controls button:hover:enabled { background: var(--ink); color: #FCFDFF; border-color: var(--ink); }
 .recommendation-controls button:active:enabled { background: #444448; }
 button:disabled { cursor: default; }
 a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, textarea:focus-visible,
 .note-content textarea:focus-visible, .recommendation-track:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 5px;
-  box-shadow: 0 0 0 2px #fff;
+  box-shadow: 0 0 0 2px #FCFDFF;
 }
-.contact-band :where(a, button):focus-visible { outline-color: #fff; box-shadow: 0 0 0 2px var(--ink); }
+.contact-band :where(a, button):focus-visible { outline-color: #FCFDFF; box-shadow: 0 0 0 2px var(--ink); }
 .project-art { transition: box-shadow .2s ease; }
 .project-art:hover, .project-art:focus-visible { box-shadow: 0 0 0 2px #c1c1c7; }
 summary { transition: color .18s ease; }
 summary:hover { color: #56565b; }
-summary:active { color: #080809; }
+summary:active { color: #000E14; }
 .earlier-experience summary > span { transition: transform .26s ease; }
 .note-check span { transition: opacity .18s ease; }
 
@@ -394,13 +394,13 @@ summary[aria-expanded="false"] .details-icon, .company-services details[open] su
 .project-row .project-copy .project-summary { font-size: 16px; line-height: 1.65; color: #53535b; max-width: 440px; margin: 0 0 18px; }
 .project-row .project-copy .project-capability { margin: 0 0 28px; font-size: 12px; line-height: 1.6; }
 .project-row .project-copy .project-stage { margin: 0 0 28px; font-size: 12px; line-height: 1.6; }
-.project-row .project-art { width: 100%; aspect-ratio: 1.5; height: auto; border-radius: 6px; background: #f5f5f6; }
+.project-row .project-art { width: 100%; aspect-ratio: 1.5; height: auto; border-radius: 6px; background: #F1F5FB; }
 .project-row .project-art img { object-fit: cover; transition: transform .6s cubic-bezier(.2,.7,.25,1); }
 .project-row .project-link:hover .text-link, .project-row .project-link:focus-visible .text-link { color: #56565b; text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
 .project-row .project-link:active .text-link { color: var(--ink); }
 .project-row .project-art:hover { box-shadow: none; }
 .project-link:focus-visible { outline-offset: 8px; border-radius: 3px; }
-.work-index { display: flex; align-items: center; gap: 24px; position: sticky; top: 80px; z-index: 7; padding: 13px 0; background: #ffffffed; backdrop-filter: blur(16px); overflow-x: auto; scrollbar-width: thin; }
+.work-index { display: flex; align-items: center; gap: 24px; position: sticky; top: 80px; z-index: 7; padding: 13px 0; background: #FCFDFFed; backdrop-filter: blur(16px); overflow-x: auto; scrollbar-width: thin; }
 .work-index a { display: inline-grid; flex-shrink: 0; min-height: 32px; align-items: center; font-size: 12px; color: var(--muted); text-underline-offset: 5px; }
 .work-index a::after { content: attr(data-project-label); font-weight: 600; visibility: hidden; height: 0; overflow: hidden; pointer-events: none; }
 .work-index a:hover { color: var(--ink); text-decoration: underline; }
