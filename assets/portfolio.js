@@ -72,83 +72,6 @@
     }));
     show(current,false);
   });
-  // The compact Home notes have their own controls and interruptible paper transition.
-  document.querySelectorAll('[data-notes]').forEach(notes => {
-    const panels = [...notes.querySelectorAll('[data-note]')];
-    const controls = notes.querySelector('[data-note-controls]');
-    const previous = notes.querySelector('[data-note-prev]');
-    const next = notes.querySelector('[data-note-next]');
-    const reset = notes.querySelector('[data-note-reset]');
-    const count = notes.querySelector('[data-note-count]');
-    const status = notes.querySelector('[data-note-status]');
-    let current = 0, timeline;
-    notes.dataset.enhanced = 'true';
-    controls.hidden = false;
-    function updateReset() {
-      reset.setAttribute('aria-disabled',String(!panels[current].querySelector('input:checked')));
-    }
-    function paint() {
-      panels.forEach((panel,index) => {
-        const selected = index === current;
-        panel.style.visibility = selected ? 'visible' : 'hidden';
-        panel.setAttribute('aria-hidden',String(!selected));
-        panel.inert = !selected;
-      });
-      count.textContent = `${String(current+1).padStart(2,'0')} / ${String(panels.length).padStart(2,'0')}`;
-      updateReset();
-    }
-    function settle() {
-      timeline?.kill();
-      timeline = undefined;
-      if (window.gsap) window.gsap.set(panels,{clearProps:'transform,opacity,zIndex'});
-      else panels.forEach(panel => ['transform','opacity','z-index'].forEach(property => panel.style.removeProperty(property)));
-      paint();
-    }
-    function show(index, direction) {
-      const target = (index + panels.length) % panels.length;
-      if (target === current) return;
-      const outgoing = panels[current];
-      settle();
-      current = target;
-      paint();
-      const incoming = panels[current];
-      status.textContent = `Note ${current+1} of ${panels.length}: ${incoming.dataset.noteLabel}`;
-      if (!window.gsap || reduced.matches || document.hidden) return;
-      // Only the incoming note is exposed to assistive technology during the overlap.
-      outgoing.style.visibility = 'visible';
-      outgoing.style.zIndex = '1';
-      incoming.style.zIndex = '2';
-      timeline = window.gsap.timeline({onComplete:settle});
-      timeline.to(outgoing,{x:-direction*26,y:5,scale:.98,opacity:0,duration:.2,ease:'power2.in'},0)
-        .fromTo(incoming,{x:direction*34,y:-8,scale:.98,opacity:0},{x:0,y:0,scale:1,opacity:1,duration:.42,ease:'power3.out'},.1);
-    }
-    previous.addEventListener('click',() => show(current-1,-1));
-    next.addEventListener('click',() => show(current+1,1));
-    controls.addEventListener('keydown',event => {
-      if (event.target === reset) return;
-      const directions = {ArrowLeft:-1,ArrowRight:1};
-      if (event.key in directions) {
-        event.preventDefault();
-        show(current+directions[event.key],directions[event.key]);
-      } else if (event.key === 'Home' || event.key === 'End') {
-        event.preventDefault();
-        show(event.key === 'Home' ? 0 : panels.length-1,event.key === 'Home' ? -1 : 1);
-      }
-    });
-    notes.addEventListener('change',updateReset);
-    reset.addEventListener('click',() => {
-      if (reset.getAttribute('aria-disabled') === 'true') return;
-      panels[current].querySelectorAll('input[type="checkbox"]').forEach(input => {input.checked=false;});
-      updateReset();
-      status.textContent = `${panels[current].dataset.noteLabel}: checklist reset`;
-    });
-    reduced.addEventListener('change',settle);
-    window.addEventListener('pagehide',settle);
-    window.addEventListener('pageshow',settle);
-    document.addEventListener('visibilitychange',() => {if(document.hidden) settle();});
-    paint();
-  });
-
   // Ambient movement has an explicit pause control and respects system preferences.
   const motionControl = document.querySelector('[data-motion-toggle]');
   const marquee = document.querySelector('.experience-marquee');
@@ -174,10 +97,23 @@
   stages.forEach(stage => {
     const slides = [...stage.querySelectorAll('.work-feedback-quote')];
     const controls = stage.querySelector('.quote-controls');
-    let current = 0;
+    const toggle = stage.querySelector('[data-quote-toggle]');
+    let current = 0, timer, inView = false, hovered = false, focusPaused = false, userPaused = false, suspended = false;
+    const canPlay = () => inView && !hovered && !focusPaused && !userPaused && !suspended && !document.hidden && !reduced.matches;
+    function schedule() {
+      clearTimeout(timer);
+      toggle.hidden = reduced.matches;
+      toggle.setAttribute('aria-label', userPaused ? 'Resume automatic colleague feedback' : 'Pause automatic colleague feedback');
+      toggle.innerHTML = userPaused ? 'Resume <span aria-hidden="true">▷</span>' : 'Pause <span aria-hidden="true">Ⅱ</span>';
+      stage.dataset.autoplay = canPlay() ? 'running' : 'paused';
+      if (canPlay()) timer = setTimeout(() => {
+        if (canPlay()) show(current + 1);
+        schedule();
+      }, 12000);
+    }
     // Preserve the tallest quote to keep controls and following sections still.
     stage.dataset.enhanced = 'true';
-    function show(next, animate = true) {
+    function show(next, animate = true, manual = false) {
       current = (next + slides.length) % slides.length;
       slides.forEach((slide, index) => {
         slide.style.visibility = index === current ? 'visible' : 'hidden';
@@ -185,18 +121,33 @@
         slide.inert = index !== current;
       });
       stage.querySelector('[data-quote-count]').textContent = `${current + 1} / ${slides.length}`;
-      if (animate) {
+      if (manual) {
+        userPaused = true;
         const announcement = stage.querySelector('[data-quote-announcement]');
         if (announcement) announcement.textContent = `Quote ${current + 1} of ${slides.length}. ${slides[current].textContent.trim()}`;
       }
       if (animate && !reduced.matches) animateMotion(slides[current], [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 480 });
     }
     controls.hidden = false;
-    stage.querySelector('[data-quote-prev]').addEventListener('click', () => show(current - 1));
-    stage.querySelector('[data-quote-next]').addEventListener('click', () => show(current + 1));
+    stage.querySelector('[data-quote-prev]').addEventListener('click', () => { show(current - 1, true, true); schedule(); });
+    stage.querySelector('[data-quote-next]').addEventListener('click', () => { show(current + 1, true, true); schedule(); });
+    toggle.addEventListener('click', () => { userPaused = !userPaused; if (!userPaused) focusPaused = false; schedule(); });
+    stage.addEventListener('pointerenter', () => { hovered = true; schedule(); });
+    stage.addEventListener('pointerleave', () => { hovered = false; schedule(); });
+    stage.addEventListener('focusin', () => { focusPaused = true; schedule(); });
+    stage.addEventListener('focusout', event => { if (!stage.contains(event.relatedTarget)) { focusPaused = false; schedule(); } });
+    document.addEventListener('visibilitychange', schedule);
+    reduced.addEventListener('change', schedule);
+    window.addEventListener('pagehide', () => { suspended = true; schedule(); });
+    window.addEventListener('pageshow', () => { suspended = false; schedule(); });
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => { inView = entries[0].isIntersecting; schedule(); }, { threshold: .25 });
+      observer.observe(stage);
+    }
     show(0, false);
+    schedule();
   });
-  // A calm, opt-in auto carousel. Colleague carousels remain entirely manual.
+  // Both feedback carousels pause while reading and honour reduced motion.
   document.querySelectorAll('[data-mentor-carousel]').forEach(carousel => {
     const slides = [...carousel.querySelectorAll('.mentor-slide')];
     const controls = carousel.querySelector('.mentor-carousel-controls');
@@ -293,8 +244,8 @@
   }
   window.addEventListener('hashchange', revealAnchor);
   revealAnchor();
-  // Initial fragments must use the enhanced panel heights and the loaded font.
-  if (location.hash && document.querySelector('[data-view-switcher], [data-notes]')) {
+  // Initial fragments must use the finished layout and loaded font on every page.
+  if (location.hash) {
     const initialHash = location.hash;
     let interrupted = false;
     const stop = () => { interrupted = true; };

@@ -65,11 +65,13 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .quote-bottom { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 44px; }
 .quote-bottom > p { font-size: 14px; color: #52616C; max-width: 580px; line-height: 1.6; }
 .quote-dark .quote-bottom > p { color: #b9b9bf; }
-.quote-controls { display: flex; gap: 20px; align-items: center; }
+.quote-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .quote-controls button { width: 46px; height: 46px; border: 1px solid #a1a1a6; border-radius: 50%; color: inherit; background: transparent; cursor: pointer; font-size: 19px; transition: background-color .2s,color .2s; }
 .quote-controls button:hover { background: var(--ink); color: #FCFDFF; }
 .quote-dark .quote-controls button:hover { background: #FCFDFF; color: var(--ink); }
 .quote-controls span { font-size: 14px; min-width: 36px; text-align: center; font-variant-numeric: tabular-nums; }
+.quote-controls .quote-play-toggle { width: auto; padding: 0 14px; gap: 10px; border-radius: 24px; font: 500 14px/1 var(--font); }
+.quote-controls .quote-play-toggle span { min-width: 0; font-size: 18px; }
 .quote-dark button:focus-visible { outline-color: #FCFDFF; box-shadow: none; }
 /* Public previews focus on one premise, with a quiet invitation. */
 .preview-opening { padding-bottom: 58px; }
@@ -383,19 +385,17 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .page-case .case-intro > .case-facts { margin-top: 48px; }
 .page-case .case-prose p + p { margin-top: 20px; }
 .page-case .case-deep-dive { background: #F1F5FB; border: 1px solid #e3e3e6; border-radius: 8px; padding: 0 24px; }
-.page-case .colour-section .case-deep-dive { background: #FCFDFF; }
 .page-case .case-deep-dive > summary { font-size: 16px; padding-block: 24px; }
-.page-case .case-deep-dive > summary:hover { color: #55555d; }
 .page-case .case-deep-dive > summary::after { display: grid; place-items: center; border: 1px solid #b9b9c0; border-radius: 50%; width: 30px; height: 30px; flex-shrink: 0; }
 .page-case .case-lightbox-bar h2 { font-size: 19px; font-weight: 400; line-height: 1.4; letter-spacing: -.012em; max-width: none; text-wrap: pretty; }
 /* Legal & General: context, system, application, behaviour, evidence, outcome. */
-.case-lead-layout { display: grid; grid-template-columns: 1.75fr 1fr; gap: 40px 100px; margin-top: 46px; align-items: start; }
+.case-lead-layout { display: grid; grid-template-columns: 1fr; gap: 32px; margin-top: 46px; align-items: start; }
 .case-title { grid-column: 1 / -1; }
 .page-case .case-title h1 { max-width: 1000px; }
-.page-case .case-lead-layout .case-hero-copy > .intro { margin-top: 0; }
+.page-case .case-lead-layout .case-hero-copy > .intro { margin-top: 0; max-width: 860px; }
 .case-editorial .case-lead-layout h1 {  max-width: 760px; }
 .page-case .case-lead-layout .case-label { margin-top: 0; }
-.case-lead-layout .case-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; border: 0; padding: 0; margin: 0; align-content: start; }
+.case-lead-layout .case-facts { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 28px; margin: 32px 0 0; align-content: start; }
 .case-lead-layout .case-facts dt { font-size: 12px; }
 .case-lead-layout .case-facts dd { font-size: 15px; }
 .case-editorial .case-lead-visual { margin-top: 56px; }
@@ -427,8 +427,6 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .disclosure-icon { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .disclosure-icon .carbon-icon { width: 20px; height: 20px; }
 .page-case .case-deep-dive > summary::after { content: ''; box-sizing: border-box; background: url('icons/add.svg') center / 24px 24px no-repeat; }
-.page-case .case-deep-dive:has(> summary:hover) { border-color: #a6a6ae; }
-.page-case .case-deep-dive { transition: border-color .2s, background-color .2s; }
 .leadership-points > article > .carbon-icon { width: 24px; height: 24px; margin-top: 3px; }
 .mentor-offers > article > .carbon-icon { width: 32px; height: 32px; }
 .quote-stage .work-feedback-quote figcaption > span { display: block; color: #52616C; margin-top: 7px; font-size: 14px; }
@@ -487,9 +485,9 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
  .mentoring-chapter .recommendation-track { grid-auto-columns: calc((100% - 24px)/2); }
  .contact-invitation { flex-direction: column; align-items: flex-start; gap: 25px; }
  .preview-story, .page-case .case-section-head { gap: 50px; }
- .case-lead-layout { gap: 40px 45px; grid-template-columns: 1.55fr 1fr; }
+ .case-lead-layout { gap: 32px; grid-template-columns: 1fr; }
  .preview-summary { gap: 45px; grid-template-columns: 1.55fr 1fr; }
- .case-lead-layout .case-facts { grid-template-columns: 1fr; gap: 20px; }
+ .case-lead-layout .case-facts { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 28px; }
  .case-editorial .case-decision-record > div { grid-template-columns: 140px 1fr 1fr; gap: 20px; }
 }
 @media (max-width: 800px) and (min-width: 701px) {
@@ -753,49 +751,6 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 :root { --page-title-size: clamp(38px, 4.4vw, 60px); --page-title-leading: 1.08; }
 .portfolio-page h1.page-title { font-size: var(--page-title-size); line-height: var(--page-title-leading); font-weight: 400; letter-spacing: -.026em; }
 .portfolio-page h1.page-title :is(.brand-phrase,.brand-display) { font-size: 1.02em; line-height: inherit; }
-/* Compact, FigJam-inspired notes. The introduction remains the primary focus. */
-.thinking-notes { width: 100%; max-width: 396px; min-width: 0; align-self: center; justify-self: center; padding: 4px 12px 0; }
-.thinking-notes-panels { position: relative; isolation: isolate; }
-.thinking-notes[data-enhanced="true"] .thinking-notes-panels { display: grid; }
-.thinking-notes[data-enhanced="true"] .thinking-notes-panels::before,
-.thinking-notes[data-enhanced="true"] .thinking-notes-panels::after { content: ""; position: absolute; z-index: -1; border-radius: 1px; }
-.thinking-notes[data-enhanced="true"] .thinking-notes-panels::before { inset: 12px -7px -10px; background: #F1F5FB; box-shadow: 0 2px 3px #000E1406; }
-.thinking-notes[data-enhanced="true"] .thinking-notes-panels::after { inset: 6px -3px -5px; background: #DBE9FF; }
-.thinking-note { min-width: 0; min-height: 330px; display: flex; flex-direction: column; gap: 16px; margin: 0 0 24px; padding: 24px; color: var(--on-accent); background: var(--accent); border: 0; border-radius: 1px; box-shadow: 0 3px 7px #000E1412, inset 0 12px 0 #FCFDFF20; transform-origin: 50% 10%; }
-.thinking-notes[data-enhanced="true"] .thinking-note { grid-area: 1/1; margin: 0; }
-.thinking-note-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.thinking-note-top p { display: flex; gap: 12px; align-items: center; margin: 0; font-size: 14px; line-height: 1.4; color: #FCFDFF; }
-.thinking-note-top p > span { font-size: 12px; color: #FCFDFF; font-variant-numeric: tabular-nums; }
-.thinking-note-top img { display: block; width: 28px; height: 28px; flex-shrink: 0; }
-.thinking-notes .thinking-note-question { font-size: 26px; line-height: 1.18; letter-spacing: -.018em; font-weight: 400; margin: 0; max-width: none; }
-.thinking-note-todos { display: grid; gap: 0; margin-top: 0; }
-.thinking-note-todo { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; min-height: 44px; font-size: 16px; line-height: 1.45; cursor: pointer; }
-.thinking-note-todo input { width: 18px; height: 18px; flex: 0 0 18px; margin: 3px 0 0; accent-color: #000E14; cursor: pointer; }
-.thinking-note-todo span { transition: color .2s; }
-.thinking-note-todo input:checked + span { text-decoration: line-through; text-decoration-thickness: 1px; color: #FCFDFF; }
-.thinking-note-todo input:focus-visible { outline: 2px solid var(--on-accent); outline-offset: 4px; }
-.thinking-note-controls { display: flex; width: fit-content; max-width: 100%; align-items: center; gap: 2px; margin: 30px auto 0; padding: 5px; border: 1px solid #e7e7eb; border-radius: 12px; background: #FCFDFF; box-shadow: 0 4px 16px #000E1408; }
-.thinking-note-controls[hidden] { display: none; }
-.thinking-note-controls button { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; min-width: 44px; height: 44px; padding: 10px; color: #000E14; font: inherit; font-size: 14px; font-weight: 400; border: 0; border-radius: 7px; background: transparent; cursor: pointer; transition: color .2s,background .2s; }
-.thinking-note-controls button:hover { background: #F1F5FB; }
-.thinking-note-controls button:active { background: #e9e9ed; }
-.thinking-note-controls button[aria-disabled="true"] { color: #96969e; cursor: default; background: transparent; }
-.thinking-note-controls button:focus-visible { outline: 2px solid #000E14; outline-offset: 1px; }
-.thinking-note-count { min-width: 57px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; color: #64646c; }
-.thinking-note-controls .thinking-note-reset { margin-left: 6px; padding-inline: 12px; }
-@media (max-width: 700px) {
- .thinking-notes { max-width: 360px; }
- .thinking-note { padding: 22px; }
- .thinking-notes .thinking-note-question { font-size: 25px; }
-}
-@media (max-width: 360px) {
- .thinking-notes { padding-inline: 7px; }
- .thinking-note { padding: 20px 18px; }
- .thinking-notes .thinking-note-question { font-size: 24px; }
- .thinking-note-controls { padding: 3px; gap: 0; }
- .thinking-note-controls .thinking-note-reset { margin-left: 2px; padding-inline: 10px; }
-}
-
 [data-enhanced="true"] .process-panels { display: grid; }
 [data-enhanced="true"] .process-panel { grid-area: 1/1; min-width: 0; }
 /* A continuous process landscape. The linework itself expresses exploration and focus. */
@@ -878,15 +833,13 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 .audience-routes > a:hover > span:first-child { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
 .audience-routes > a:focus-visible { outline-offset: 4px; }
 .page-home .hero-copy { grid-column: 1; grid-row: 1; }
-.page-home .thinking-notes { grid-column: 2; grid-row: 1; }
 .page-home .audience-routes { grid-row: 2; }
-.portfolio-page .folio-card > a > .folio-access { font-size: 15px; line-height: 1.5; margin-top: 16px; color: #56565c; }
 .about-story .evidence-principle { color: var(--ink); }
 .experience-context { color: #52616C; font-size: 17px; line-height: 1.6; max-width: 640px; margin: -24px 0 40px; }
 .portfolio-page #roles { scroll-margin-top: 120px; }
 .contact-invitation .eyebrow { font-size: 13px; color: var(--ink); margin: 0 0 14px; }
 @media (max-width: 800px) {
- .page-home .thinking-notes { grid-column: 1; grid-row: 3; }
+ .page-home .audience-routes { grid-row: 3; }
  .audience-routes { grid-template-columns: 1fr; gap: 10px; margin-top: 0; }
  .audience-routes > a { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; }
  .audience-routes > a > span:first-child { font-size: 16px; }
@@ -897,13 +850,4 @@ html:has(.portfolio-page) { scroll-padding-top: 0; }
 }
 @media (max-width: 420px) {
  .audience-routes > a { display: grid; grid-template-columns: 1fr; gap: 4px; }
-}
-
-/* Reserve the enhanced note deck before deferred scripts run. Without scripting,
-   the original stacked notes remain readable. */
-@media (scripting: enabled) {
- .thinking-notes:not([data-enhanced]) .thinking-notes-panels { display: grid; }
- .thinking-notes:not([data-enhanced]) .thinking-note { grid-area: 1/1; margin: 0; }
- .thinking-notes:not([data-enhanced]) .thinking-note:not(:first-child) { visibility: hidden; }
- .thinking-notes:not([data-enhanced]) .thinking-note-controls[hidden] { display: flex; visibility: hidden; }
 }

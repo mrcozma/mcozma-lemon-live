@@ -1,10 +1,9 @@
 /* Shared choreography. Content and controls remain usable without the engine. */
 (() => {
   'use strict';
-  const { gsap, ScrollTrigger, SplitText } = window;
+  const { gsap, ScrollTrigger } = window;
   if (!gsap || !ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
-  if (SplitText) gsap.registerPlugin(SplitText);
   ScrollTrigger.config({ ignoreMobileResize: true });
   const body = document.body;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -14,6 +13,7 @@
   let refreshTimer;
   let destroyed = false;
   let settle = () => {};
+  let settleAll = () => {};
   let updateAmbient = () => {};
   const select = selector => [...document.querySelectorAll(selector)];
 
@@ -29,8 +29,18 @@
     active.set(element, tween);
   }
   function resize(element, start, end, onComplete) {
+    const content = [...element.children].filter(child => child.tagName !== 'SUMMARY');
+    if (end > start && !reduced.matches && !destroyed) {
+      content.forEach(child => transition(child, { y: 7, opacity: .9, duration: .32, delay: .06 }));
+    } else {
+      content.forEach(child => {
+        active.get(child)?.progress(1).kill();
+        active.delete(child);
+        gsap.set(child, { clearProps: 'transform,opacity' });
+      });
+    }
     const tween = gsap.fromTo(element, { height: start }, {
-      height: end, duration: .42, ease: 'power3.inOut', overwrite: 'auto',
+      height: end, duration: .42, ease: 'power3.out', overwrite: 'auto',
       onComplete: () => { onComplete(); refresh(); }
     });
     return { cancel: () => tween.kill() };
@@ -65,16 +75,19 @@
   preferences.add({ animate: '(prefers-reduced-motion: no-preference)', compact: '(max-width: 700px)' }, context => {
     const { animate, compact } = context.conditions;
     if (!animate) return;
-    const splits = [];
     const scenes = new Map();
     const listeners = [];
+    const hoverTargets = [];
     const on = (element, event, handler, options) => {
       element?.addEventListener(event, handler, options);
       if (element) listeners.push(() => element.removeEventListener(event, handler, options));
     };
     body.dataset.motionMode = compact ? 'compact' : 'full';
     const eligible = element => !element.closest('details, dialog, .legal-copy') && element.getClientRects().length;
-    const inInitialView = element => element.getBoundingClientRect().top < innerHeight && !location.hash;
+    const inInitialView = element => {
+      const rect = element.getBoundingClientRect();
+      return rect.top < innerHeight && rect.bottom > 0;
+    };
     function addScene(element, tween) {
       if (!scenes.has(element)) scenes.set(element, []);
       scenes.get(element).push(tween);
@@ -84,54 +97,43 @@
       // Primary actions stay fully visible; fading an ancestor also fades its controls.
       if (element.matches('.button, .actions, .closing-actions') || element.querySelector('.button')) return;
       if (!eligible(element) || played.has(element)) return;
+      // A navigation arrives at a complete page, never a hidden or displaced header.
+      // Scroll entrances add movement below the fold without restructuring text.
+      if (inInitialView(element)) { played.add(element); return; }
       const tween = gsap.from(element, {
-        y: compact ? 14 : 24, opacity: 0, duration: .75, delay, ease: 'power3.out',
+        y: compact ? 12 : 20, duration: .65, delay, ease: 'power3.out', immediateRender: false,
         clearProps: 'transform,opacity',
-        scrollTrigger: { trigger: element, start: 'top 95%', once: true },
+        scrollTrigger: { trigger: element, start: 'top 92%', once: true },
         onComplete: () => played.add(element)
       });
       addScene(element, tween);
     }
 
-    // Line masks preserve the font pairing and establish the reading order.
+    // Native headings retain their exact line wrapping before and after fonts load.
     select('h1, .chapter-heading h2, .leadership-title h2, .quote-heading h2, .closing-section h2, .mentor-invitation h2, .mentoring-main h2, .case-section-head h2').forEach(heading => {
-      if (!eligible(heading) || played.has(heading)) return;
-      // Mixed typefaces retain their natural inline layout; no overlapping masks.
-      if (!SplitText || heading.querySelector('.brand-phrase')) { reveal(heading); return; }
-      const accessibleName = heading.innerText.replace(/\s+/g, ' ').trim();
-      const split = SplitText.create(heading, {
-        type: 'lines', mask: 'lines', linesClass: 'motion-line', autoSplit: true, aria: 'auto',
-        onSplit(self) {
-          heading.setAttribute('aria-label', accessibleName);
-          const tween = gsap.from(self.lines, {
-            yPercent: 105, duration: compact ? .8 : 1.05, stagger: .085, ease: 'power4.out',
-            scrollTrigger: { trigger: heading, start: 'top 96%', once: true },
-            onComplete: () => played.add(heading)
-          });
-          addScene(heading, tween);
-          return tween;
-        }
-      });
-      splits.push(split);
+      reveal(heading);
     });
     select('.hero-copy > :not(h1):not(.actions), .page-opening > :not(h1):not(.work-filters), .about-heading > :not(h1), .contact-opening > :not(h1), .case-title > :not(h1), .about-story, .case-hero-copy, .case-facts, .preview-summary').forEach((element, index) => reveal(element, inInitialView(element) ? Math.min(index, 3) * .06 : 0));
     select('.folio-meta, .folio-card h3, .folio-card > a > p, .leadership-endorsement, .leadership-story, .leadership-points > article, .mentor-preview, .mentor-offers > article, .lab-project-panel, .lab-community-resource, .contact-paths > a, .career-entry, .invitation-panel, .case-section-head .case-prose, .case-results, .case-decision-record, .case-next, .private-context').forEach(element => reveal(element));
+    // Proof arrives as a small sequence, while every number remains readable.
+    select('.leadership-pillars, .outcome-grid').forEach(group => {
+      [...group.children].forEach((element,index) => reveal(element, Math.min(index,2) * .07));
+    });
 
     // Media opens into its full canvas. Evidence boards keep their natural ratio.
     select('.folio-visual, .public-cover, .case-cover, .case-figure > button:first-child').forEach(element => {
-      if (!eligible(element)) return;
+      if (!eligible(element) || inInitialView(element)) return;
       addScene(element, gsap.fromTo(element,
         { clipPath: `inset(0 ${compact ? 2 : 6}% 0 ${compact ? 2 : 6}% round 12px)` },
         { clipPath: 'inset(0 0% 0 0% round 12px)', ease: 'none',
           scrollTrigger: { trigger: element, start: 'top 94%', end: 'top 57%', scrub: .55, invalidateOnRefresh: true }
         }));
     });
-    const canvas = document.querySelector('.thinking-notes');
-    if (canvas) addScene(canvas,gsap.from(canvas, { y: compact ? 14 : 24, opacity: 0, duration: .9, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: canvas, start: 'top 95%', once: true } }));
     const process = document.querySelector('.process-studio');
     if (process) reveal(process);
     // Product typography gives the independent work its own visual scale.
     select('.decised-identity, .lab-live-body > div:first-child').forEach(element => {
+      if (!eligible(element) || inInitialView(element)) return;
       addScene(element, gsap.from(element, { x: compact ? -12 : -38, duration: 1, ease: 'power3.out', clearProps: 'transform,opacity', scrollTrigger: { trigger: element, start: 'top 90%', once: true } }));
     });
     select('.closing-actions, .practice-bridge, .decised-invitation, .lab-live-copy').forEach(element => reveal(element));
@@ -141,55 +143,105 @@
       select('.folio-link').forEach(link => {
         const img = link.querySelector('.folio-art img');
         if (!img) return;
-        const hover = gsap.to(img, { scale: 1.045, duration: .7, ease: 'power3.out', paused: true });
-        on(link, 'pointerenter', () => hover.play());
-        on(link, 'pointerleave', () => hover.reverse());
-        on(link, 'focus', () => hover.play());
-        on(link, 'blur', () => hover.reverse());
+        hoverTargets.push(img);
+        const enter = () => gsap.to(img, { scale: 1.045, duration: .65, ease: 'power3.out', overwrite: 'auto' });
+        const leave = () => gsap.to(img, { scale: 1, duration: .45, ease: 'power3.out', overwrite: 'auto', clearProps: 'transform' });
+        on(link, 'pointerenter', enter);
+        on(link, 'pointerleave', leave);
+        on(link, 'focus', enter);
+        on(link, 'blur', leave);
+      });
+      select('.service-deck-card').forEach(card => {
+        hoverTargets.push(card);
+        on(card, 'pointerenter', () => gsap.to(card, { y: -4, duration: .35, ease: 'power2.out', overwrite: 'auto' }));
+        on(card, 'pointerleave', () => gsap.to(card, { y: 0, duration: .3, ease: 'power2.out', overwrite: 'auto', clearProps: 'transform' }));
       });
     }
 
-    // The loop pauses off screen, on hover, in background tabs and by explicit choice.
+    // Ambient transforms pause off screen, in background tabs and by explicit choice.
+    // Radial fields are painted once; only their transforms move (never blur filters).
     const marquee = document.querySelector('.experience-marquee');
     const track = marquee?.querySelector('.logo-track');
-    let loop, near = true, hover = false;
+    const field = document.querySelector('.page-home .opening-atmosphere');
+    const fields = field ? [...field.querySelectorAll('.atmosphere-field')] : [];
+    const orbs = fields.map(element => element.querySelector('.atmosphere-orb'));
+    const drifts = orbs.map((orb, index) => gsap.to(orb, {
+      xPercent: index ? -10 : 12, yPercent: index ? 8 : -7,
+      scale: index ? 1.08 : 1.12, duration: index ? 29 : 24,
+      ease: 'sine.inOut', repeat: -1, yoyo: true
+    }));
+    let loop, near = true, hover = false, fieldNear = true;
     if (track) {
       marquee.dataset.gsapMarquee = '';
       loop = gsap.fromTo(track, { xPercent: 0 }, { xPercent: -50, duration: 42, repeat: -1, ease: 'none' });
-      updateAmbient = () => loop.paused(!near || hover || document.hidden || body.classList.contains('ambient-paused'));
-      ScrollTrigger.create({ trigger: marquee, start: 'top bottom', end: 'bottom top', onToggle: self => { near = self.isActive; updateAmbient(); } });
+      const logoVisibility = ScrollTrigger.create({ trigger: marquee, start: 'top bottom', end: 'bottom top', onToggle: self => { near = self.isActive; updateAmbient(); } });
+      near = logoVisibility.isActive;
       on(marquee, 'pointerenter', () => { hover = true; updateAmbient(); });
       on(marquee, 'pointerleave', () => { hover = false; updateAmbient(); });
-      on(document, 'portfolio:ambient', updateAmbient);
-      on(document, 'visibilitychange', updateAmbient);
-      updateAmbient();
     }
+    const pointerX = fields.map(element => gsap.quickTo(element, 'x', { duration: 1.2, ease: 'power2.out' }));
+    const pointerY = fields.map(element => gsap.quickTo(element, 'y', { duration: 1.2, ease: 'power2.out' }));
+    updateAmbient = () => {
+      const paused = destroyed || document.hidden || body.classList.contains('ambient-paused') || body.classList.contains('menu-open');
+      loop?.paused(!near || hover || paused);
+      drifts.forEach(drift => drift.paused(!fieldNear || paused));
+      if (field) field.dataset.ambientRunning = String(fieldNear && !paused);
+      if (paused || !fieldNear) {
+        [...pointerX,...pointerY].forEach(move => move.tween.pause());
+        gsap.set(fields, { x: 0, y: 0 });
+      }
+    };
+    if (field) {
+      const fieldVisibility = ScrollTrigger.create({ trigger: document.querySelector('.hero'), start: 'top bottom', end: 'bottom top', onToggle: self => { fieldNear = self.isActive; updateAmbient(); } });
+      fieldNear = fieldVisibility.isActive;
+      if (!compact && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        on(document, 'pointermove', event => {
+          if (event.pointerType === 'touch' || !fieldNear || document.hidden || body.classList.contains('ambient-paused') || body.classList.contains('menu-open')) return;
+          const x = Math.max(-1, Math.min(1, event.clientX / innerWidth * 2 - 1));
+          const y = Math.max(-1, Math.min(1, event.clientY / Math.min(innerHeight,850) * 2 - 1));
+          fields.forEach((element,index) => { pointerX[index](x * (index ? -20 : 30)); pointerY[index](y * (index ? -14 : 20)); });
+        }, { passive: true });
+        on(document.documentElement, 'pointerleave', () => fields.forEach((element,index) => { pointerX[index](0); pointerY[index](0); }));
+      }
+    }
+    on(document, 'portfolio:ambient', updateAmbient);
+    on(document, 'visibilitychange', updateAmbient);
+    updateAmbient();
 
     // Reading progress is quiet, decorative and separate from the chapter links.
     const progress = document.querySelector('[data-reading-progress]');
     if (progress) gsap.fromTo(progress, { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: document.querySelector('main'), start: 'top top', end: 'bottom bottom', scrub: true } });
 
     // Focus and deep links must never arrive at masked or translated content.
+    const finishScene = (tweens, element) => {
+      tweens.forEach(tween => {
+        tween.progress(1).pause();
+        tween.scrollTrigger?.kill(false, true);
+        gsap.set(tween.targets(), { clearProps: 'transform,opacity,clipPath' });
+      });
+      played.add(element);
+    };
     settle = target => {
       scenes.forEach((tweens, element) => {
         if (element === target || element.contains(target) || target.contains(element)) {
-          tweens.forEach(tween => {
-            tween.progress(1).pause();
-            tween.scrollTrigger?.kill(false, true);
-            gsap.set(tween.targets(), { clearProps: 'transform,opacity,clipPath' });
-          });
-          played.add(element);
+          finishScene(tweens,element);
         }
       });
+    };
+    settleAll = () => {
+      scenes.forEach(finishScene);
+      gsap.killTweensOf(hoverTargets);
+      gsap.set(hoverTargets, { clearProps: 'transform' });
     };
     settleHash();
     refresh();
     return () => {
       listeners.forEach(remove => remove());
-      splits.forEach(split => split.revert());
       if (marquee) delete marquee.dataset.gsapMarquee;
+      if (field) delete field.dataset.ambientRunning;
       delete body.dataset.motionMode;
       settle = () => {};
+      settleAll = () => {};
       updateAmbient = () => {};
     };
   });
@@ -219,8 +271,10 @@
   });
   window.addEventListener('pagehide', event => {
     destroyed = true;
+    updateAmbient();
     clearTimeout(refreshTimer);
     active.forEach(tween => { tween.progress(1); tween.kill(); }); active.clear();
+    settleAll();
     if (!event.persisted) preferences.revert();
   });
   window.addEventListener('pageshow', event => {

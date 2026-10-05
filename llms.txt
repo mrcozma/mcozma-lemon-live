@@ -22,6 +22,8 @@ Marian Cozma is a Product Design Lead with an engineering background and experie
 
 ## More about Marian
 
+- [AI experience](https://mcozma.com/about/#ai-experience): Research and concept design for conversational experiences, response architecture and user control.
+
 - [Mentorship](https://mcozma.com/mentorship/): Practical guidance for designers on portfolios, careers and leadership.
 - [Books](https://mcozma.com/about/#reading): Books that inform Marian’s design practice.
 

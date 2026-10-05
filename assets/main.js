@@ -7,24 +7,46 @@
   const toggle = document.querySelector('.menu-toggle');
   const navigation = document.querySelector('#navigation');
   const wide = matchMedia('(min-width: 701px)');
+  const backgroundState = new Map();
   function closeMenu() {
     toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', 'Open menu');
     navigation?.classList.remove('open');
+    if (navigation) navigation.inert = !wide.matches;
+    document.body.classList.remove('menu-open');
+    document.dispatchEvent(new Event('portfolio:ambient'));
+    backgroundState.forEach((inert, element) => { element.inert = inert; });
+    backgroundState.clear();
   }
+  closeMenu();
   toggle?.addEventListener('click', () => {
-    const open = toggle.getAttribute('aria-expanded') !== 'true';
-    toggle.setAttribute('aria-expanded', String(open));
-    navigation?.classList.toggle('open', open);
-    if (open && !matchMedia('(prefers-reduced-motion: reduce)').matches && typeof navigation?.animate === 'function') {
-      if (window.PortfolioMotion) window.PortfolioMotion.transition(navigation, { y: -10, duration: .3 });
-      else navigation.animate([{ opacity: 0, transform: 'translateY(-10px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.16,1,.3,1)' });
+    if (toggle.getAttribute('aria-expanded') === 'true') { closeMenu(); return; }
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Close menu');
+    navigation?.classList.add('open');
+    if (navigation) navigation.inert = false;
+    document.body.classList.add('menu-open');
+    document.dispatchEvent(new Event('portfolio:ambient'));
+    document.querySelectorAll('main, body > footer').forEach(element => {
+      backgroundState.set(element, element.inert);
+      element.inert = true;
+    });
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      navigation?.querySelectorAll('a').forEach((link,index) => {
+        if (window.PortfolioMotion) window.PortfolioMotion.transition(link, { y: 8, duration: .3, delay: index * .025 });
+        else link.animate?.([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 220 });
+      });
     }
+    navigation?.querySelector('a')?.focus();
   });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
-      closeMenu();
-      toggle.focus();
-    }
+    if (toggle?.getAttribute('aria-expanded') !== 'true') return;
+    if (event.key === 'Escape') { closeMenu(); toggle.focus(); return; }
+    if (event.key !== 'Tab') return;
+    const items = [toggle, ...navigation.querySelectorAll('a[href]')];
+    const first = items[0], last = items.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
   navigation?.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
   wide.addEventListener('change', closeMenu);
@@ -33,13 +55,14 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   // Keep native disclosures usable without scripts; enhance their size change.
   const disclosures = new Map();
-  document.querySelectorAll('.process-step, .company-services details, .earlier-experience, .reading-more, .case-deep-dive, .story-disclosure').forEach(details => {
+  document.querySelectorAll('details').forEach(details => {
     const summary = details.querySelector(':scope > summary');
     if (!summary) return;
     const group = details.getAttribute('name');
     if (group) details.removeAttribute('name');
     let animation = null;
     let expanded = details.open;
+    let measuring = false;
     function finish() {
       details.open = expanded;
       details.style.removeProperty('height');
@@ -59,10 +82,14 @@
       details.style.removeProperty('height');
       details.style.removeProperty('overflow');
       if (reducedMotion.matches || (!window.PortfolioMotion && typeof details.animate !== 'function')) { finish(); return; }
+      // Measuring native open/closed sizes must not replace the visitor's intent.
+      measuring = true;
       details.open = next;
       const end = details.getBoundingClientRect().height;
       // Keep the content rendered until the closing motion completes.
       details.open = true;
+      measuring = false;
+      if (Math.abs(end - start) < 1) { finish(); return; }
       details.style.overflow = 'clip';
       if (window.PortfolioMotion) { animation = window.PortfolioMotion.resize(details, start, end, finish); return; }
       animation = details.animate([{ height: `${start}px` }, { height: `${end}px` }], {
@@ -86,7 +113,7 @@
     });
     summary.setAttribute('aria-expanded', String(expanded));
     details.addEventListener('toggle', () => {
-      if (animation) return;
+      if (animation || measuring) return;
       expanded = details.open;
       summary.setAttribute('aria-expanded', String(expanded));
     });
