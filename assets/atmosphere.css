@@ -520,3 +520,10 @@
 @media (prefers-reduced-motion: reduce) {
  .lab-wire, .lab-node-dot, .page-case .case-deep-dive > summary::after { transition: none; }
 }
+
+/* Owner-supplied November mark beside the established wordmark. */
+.portfolio-page .header .brand, .brand { display: inline-flex; align-items: center; gap: 8px; width: auto; flex-shrink: 0; }
+.brand img.brand-mark { width: 32px; height: 32px; object-fit: contain; }
+@media (max-width: 700px) { .brand { gap: 6px; } .brand img.brand-mark { width: 28px; height: 28px; } }
+
+.earlier-experience p > a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
